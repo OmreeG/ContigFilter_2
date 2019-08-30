@@ -32,7 +32,7 @@ This sample module contains one small method that filters contigs.
     ######################################### noqa
     VERSION = "0.0.1"
     GIT_URL = "https://github.com/OmreeG/ContigFilter_2.git"
-    GIT_COMMIT_HASH = "f530bd3110c392ce09fed0d9084778f2de6866a6"
+    GIT_COMMIT_HASH = "7a94d42f93492b940db9bd42410348f7392c557d"
 
     #BEGIN_CLASS_HEADER
     # Class variables and functions can be defined in this block
@@ -184,8 +184,11 @@ This sample module contains one small method that filters contigs.
         #print(fasta_file)
 
 
-        if name not in params:
-                raise ValueError('Parameter "' + name + '" is required but missing')
+        
+
+
+        #if name not in params:
+        #        raise ValueError('Parameter "' + name + '" is required but missing')
         if not isinstance(params['min_length'], int) or (params['min_length'] < 0):
             raise ValueError('Min length must be a non-negative integer')
         if not isinstance(params['max_length'], int) or (params['max_length'] < 0):

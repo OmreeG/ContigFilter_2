@@ -50,7 +50,7 @@ class omreegalozContigFilterTest(unittest.TestCase):
 
     @classmethod
     def prepareTestData(cls):
-        """This function creates an assembly object for testing"""
+        """This function creates an assembly object for testing - length is 27 bp"""
         fasta_content = '>seq1 something soemthing asdf\n' \
                         'agcttttcat\n' \
                         '>seq2\n' \
@@ -62,7 +62,7 @@ class omreegalozContigFilterTest(unittest.TestCase):
         with open(filename, 'w') as f:
             f.write(fasta_content)
         assemblyUtil = AssemblyUtil(cls.callback_url)
-        cls.assembly_input_ref = assemblyUtil.save_assembly_from_fasta({
+        cls.assembly_ref = assemblyUtil.save_assembly_from_fasta({
             'file': {'path': filename},
             'workspace_name': cls.wsName,
             'assembly_name': 'TestAssembly'
@@ -75,12 +75,11 @@ class omreegalozContigFilterTest(unittest.TestCase):
             print('Test workspace was deleted')
 
     # NOTE: According to Python unittest naming rules test method names should start from 'test'. # noqa
-    # NOTE: According to Python unittest naming rules test method names should start from 'test'. # noqa
     def my_test_run_omreegalozContigFilter_ok(self):
         # call your implementation
         ret = self.serviceImpl.run_omreegalozContigFilter(self.ctx,
                                                 {'workspace_name': self.wsName,
-                                                 'assembly_input_ref': self.assembly_input_ref,
+                                                 'assembly_ref': self.assembly_ref,
                                                  'min_length': 10
                                                  })
 
@@ -93,54 +92,65 @@ class omreegalozContigFilterTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'min_length parameter cannot be negative'):
             self.serviceImpl.run_omreegalozContigFilter(self.ctx,
                                               {'workspace_name': self.wsName,
-                                               'assembly_input_ref': '1/fake/3',
+                                               'assembly_ref': '1/fake/3',
                                                'min_length': '-10'})
 
     def my_test_run_omreegalozContigFilter_min_len_parse(self):
         with self.assertRaisesRegex(ValueError, 'Cannot parse integer from min_length parameter'):
             self.serviceImpl.run_omreegalozContigFilter(self.ctx,
                                               {'workspace_name': self.wsName,
-                                               'assembly_input_ref': '1/fake/3',
+                                               'assembly_ref': '1/fake/3',
                                                'min_length': 'ten'})
     def test_run_omreegalozContigFilter_max(self):
         ref = "79/16/1"
         result = self.serviceImpl.run_omreegalozContigFilter_max(self.ctx, {
             'workspace_name': self.wsName,
-            'assembly_input_ref': ref,
+            'assembly_ref': ref,
             'min_length': 100,
             'max_length': 100000
         })
         print(result)
         # TODO -- assert some things (later)
     def test_invalid_params(self):
+
+        #impl stands for the class omreegalozContigFilter
         impl = self.serviceImpl
+
+        #Comes from omreegalozContigFilterServer
         ctx = self.ctx
+
+        #This looks like "test_ContigFilter_" + int(time.time() * 1000)
         ws = self.wsName
+
         ref = "79/16/1"
         # Missing assembly ref
         with self.assertRaises(ValueError):
             impl.run_omreegalozContigFilter_max(ctx, {'workspace_name': ws,'min_length': 100, 'max_length': 1000000})
+        
+        #Assembly ref looks wrong
+        with self.assertRaises(ValueError):
+            impl.run_omreegalozContigFilter_max(ctx, {'workspace_name': ws,'min_length': 100, 'max_length': 1000000, 'assembly_ref': 1})
+
+
+
         # Missing min length
         with self.assertRaises(ValueError):
-            impl.run_omreegalozContigFilter_max(ctx, {'workspace_name': ws, 'assembly_input_ref': 'x', 'max_length': 1000000})
+            impl.run_omreegalozContigFilter_max(ctx, {'workspace_name': ws, 'assembly_ref': ref, 'max_length': 1000000})
         # Min length is negative
         with self.assertRaises(ValueError):
-            impl.run_omreegalozContigFilter_max(ctx, {'workspace_name': ws, 'assembly_input_ref': 'x', 'min_length': -1, 'max_length': 1000000})
+            impl.run_omreegalozContigFilter_max(ctx, {'workspace_name': ws, 'assembly_ref': ref, 'min_length': -1, 'max_length': 1000000})
         # Min length is wrong type
         with self.assertRaises(ValueError):
-            impl.run_omreegalozContigFilter_max(ctx, {'workspace_name': ws, 'assembly_input_ref': 'x', 'min_length': 'x', 'max_length': 1000000})
-        # Assembly ref is wrong type
-        with self.assertRaises(ValueError):
-            impl.run_omreegalozContigFilter_max(ctx, {'workspace_name': ws, 'assembly_input_ref': 1, 'min_length': 1, 'max_length': 1000000})
+            impl.run_omreegalozContigFilter_max(ctx, {'workspace_name': ws, 'assembly_ref': ref, 'min_length': 'x', 'max_length': 1000000})
         #Max length is wrong type
         with self.assertRaises(ValueError):
-            impl.run_omreegalozContigFilter_max(ctx, {'workspace_name': ws, 'assembly_input_ref': 1, 'min_length': 1, 'max_length': 'x'})
+            impl.run_omreegalozContigFilter_max(ctx, {'workspace_name': ws, 'assembly_ref': ref, 'min_length': 1, 'max_length': 'x'})
         #Max length is negative
         with self.assertRaises(ValueError):
-            impl.run_omreegalozContigFilter_max(ctx, {'workspace_name': ws, 'assembly_input_ref': 1, 'min_length': 1, 'max_length': -1})
+            impl.run_omreegalozContigFilter_max(ctx, {'workspace_name': ws, 'assembly_ref': ref, 'min_length': 1, 'max_length': -1})
         #Max length is missing
         with self.assertRaises(ValueError):
-            impl.run_omreegalozContigFilter_max(ctx, {'workspace_name': ws, 'assembly_input_ref': 1, 'min_length': 1})
+            impl.run_omreegalozContigFilter_max(ctx, {'workspace_name': ws, 'assembly_ref': ref, 'min_length': 1})
 
 
 

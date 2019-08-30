@@ -1,12 +1,12 @@
 TD:
-replace all assembly_input_ref with assembly_input_ref
+replace all assembly_ref with assembly_ref
 
 
 The parameters:
 
 In the yaml:
 parameters :
-    assembly_input_ref :
+    assembly_ref :
         ui-name : |
             Assembly
         short-hint : |
@@ -26,7 +26,7 @@ parameters :
 In the :
     "parameters": [
         {
-            "id": "assembly_input_ref",
+            "id": "assembly_ref",
             "optional": false,
             "advanced": false,
             "allow_multiple": false,
