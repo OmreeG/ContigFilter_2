@@ -1,0 +1,66 @@
+TD:
+replace all assembly_input_ref with assembly_input_ref
+
+
+The parameters:
+
+In the yaml:
+parameters :
+    assembly_input_ref :
+        ui-name : |
+            Assembly
+        short-hint : |
+            The assembly to filter (will be overwritten)
+    min_length :
+        ui-name : |
+            Min Length Threshold
+        short-hint : |
+            All contigs below this length will be removed
+    max_length :
+        ui-name: |
+                Maximum contig length
+        short-hint: |
+                Maximum required length of every contig in the assembly
+
+
+In the :
+    "parameters": [
+        {
+            "id": "assembly_input_ref",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [ "" ],
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types": [ "KBaseGenomeAnnotations.Assembly", "KBaseGenomes.ContigSet" ]
+            }
+        },
+        {
+            "id": "min_length",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [ "" ],
+            "field_type": "text",
+            "text_options": {
+                "validate_as": "int",
+                "min_integer" : 0
+            }
+        },
+
+        {
+        "id": "max_length",
+        "optional": false,
+        "advanced": false,
+        "allow_multiple": false,
+        "default_values": [ "99999999" ],
+        "field_type": "text",
+        "text_options": {
+            "validate_as": "int",
+            "min_integer" : 0
+        }
+    }
+
+
+

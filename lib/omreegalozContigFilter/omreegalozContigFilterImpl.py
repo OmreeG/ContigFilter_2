@@ -5,6 +5,8 @@ import logging
 import os
 from pprint import pformat
 
+
+#other imports
 from Bio import SeqIO
 
 from installed_clients.AssemblyUtilClient import AssemblyUtil
@@ -29,8 +31,8 @@ This sample module contains one small method that filters contigs.
     # the latter method is running.
     ######################################### noqa
     VERSION = "0.0.1"
-    GIT_URL = ""
-    GIT_COMMIT_HASH = ""
+    GIT_URL = "https://github.com/OmreeG/ContigFilter_2.git"
+    GIT_COMMIT_HASH = "f530bd3110c392ce09fed0d9084778f2de6866a6"
 
     #BEGIN_CLASS_HEADER
     # Class variables and functions can be defined in this block
@@ -74,7 +76,10 @@ This sample module contains one small method that filters contigs.
         if 'workspace_name' not in params:
             raise ValueError('Parameter workspace_name is not set in input arguments')
         workspace_name = params['workspace_name']
+        #DEBUG:
+        print("HELLO WE ARE HERE")
         if 'assembly_input_ref' not in params:
+            print(params)
             raise ValueError('Parameter assembly_input_ref is not set in input arguments')
         assembly_input_ref = params['assembly_input_ref']
         if 'min_length' not in params:
@@ -159,8 +164,69 @@ This sample module contains one small method that filters contigs.
         # ctx is the context object
         # return variables are: output
         #BEGIN run_omreegalozContigFilter_max
-        print(params['min_length'], params['max_length'], params['assembly_ref'])
-        output = {}
+        
+
+        #DEBUG: Print Hello
+        print("HELLO AGAIN, WE ARE HERE NOW!")
+
+ 
+        #DEBUG: Print params
+        print(params)      
+
+        if 'assembly_input_ref' not in params:
+            raise ValueError('Parameter assembly_input_ref is not set in input arguments')
+
+        assembly_input_ref = params['assembly_input_ref']
+
+
+        assemblyUtil = AssemblyUtil(self.callback_url)
+        fasta_file = assemblyUtil.get_assembly_as_fasta({'ref': assembly_input_ref})
+        #print(fasta_file)
+
+
+        if name not in params:
+                raise ValueError('Parameter "' + name + '" is required but missing')
+        if not isinstance(params['min_length'], int) or (params['min_length'] < 0):
+            raise ValueError('Min length must be a non-negative integer')
+        if not isinstance(params['max_length'], int) or (params['max_length'] < 0):
+            raise ValueError('Max length must be a non-negative integer')
+        if not isinstance(params['assembly_input_ref'], str) or not len(params['assembly_input_ref']):
+            raise ValueError('Pass in a valid assembly reference string')
+        if (params['max_length'] < params['min_length']):
+            raise ValueError('max length must be greater than min length')
+        print(params['min_length'], params['max_length'], params['assembly_input_ref'])
+
+
+
+
+
+        parsed_assembly = SeqIO.parse(fasta_file['path'], 'fasta')
+        min_length = params['min_length']
+        max_length = params['max_length']
+
+        #Good contigs above min length
+        good_contigs = []
+
+        # total contigs regardless of length
+        n_total = 0
+        # total contigs over the min_length
+        n_remaining = 0
+
+        for record in parsed_assembly:
+            n_total += 1
+            if len(record.seq) >= min_length and len(record.seq) <= max_length:
+                good_contigs.append(record)
+                n_remaining += 1
+        output = {
+            'n_total': n_total,
+            'n_remaining': n_remaining
+        }
+
+
+
+
+
+        #fasta_file = assembly_util.get_assembly_as_fasta({'ref': params['assembly_ref']})
         #END run_omreegalozContigFilter_max
 
         # At some point might do deeper type checking...

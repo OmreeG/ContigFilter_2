@@ -32,29 +32,13 @@
                 "validate_as": "int",
                 "min_integer" : 0
             }
-        },
-
-	{
-        "id": "max_length",
-        "optional": false,
-        "advanced": false,
-        "allow_multiple": false,
-        "default_values": [ "99999999" ],
-        "field_type": "text",
-        "text_options": {
-            "validate_as": "int",
-            "min_integer" : 0,
-            "max_integer" : 1000000
         }
-    }
-
     ],
-
     "behavior": {
         "service-mapping": {
             "url": "",
             "name":"omreegalozContigFilter",
-            "method": "run_omreegalozContigFilter_max",
+            "method": "run_omreegalozContigFilter",
             "input_mapping": [
                 {
                     "narrative_system_variable": "workspace",
@@ -69,10 +53,7 @@
                 },{
                     "input_parameter": "min_length",
                     "target_property": "min_length"
-                },{
-        		"input_parameter": "max_length",
-        		"target_property": "max_length"
-    		}
+                }
             ],
             "output_mapping": [
                 {
